@@ -1,13 +1,12 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '@/store/useStore';
-import Skeleton from '@/components/Skeleton';
 import type { Player } from '@/types';
 import './PlayerDashboard.css';
 
 export default function PlayerDashboard() {
   const navigate = useNavigate();
-  const { currentUser, logout, fetchPlayerData, isLoading } = useStore();
+  const { currentUser, logout, fetchPlayerData } = useStore();
   const player = currentUser as Player | null;
 
   useEffect(() => {

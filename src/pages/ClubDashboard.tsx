@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '@/store/useStore';
 import { QRCodeSVG } from 'qrcode.react';
-import Skeleton from '@/components/Skeleton';
-import type { Club, Player, Prize } from '@/types';
+import type { Club, Player } from '@/types';
 import './ClubDashboard.css';
 
 export default function ClubDashboard() {
@@ -17,7 +16,6 @@ export default function ClubDashboard() {
     fetchClubPrizeClaims,
     confirmPrizeClaim,
     updateClubTime,
-    isLoading,
   } = useStore();
   const club = currentUser as Club | null;
   const [activeTab, setActiveTab] = useState<'overview' | 'players' | 'prizes' | 'qr'>('overview');

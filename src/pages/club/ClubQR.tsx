@@ -14,8 +14,8 @@ export default function ClubQR() {
   const [isSpinning, setIsSpinning] = useState(false);
   const [selectedPrize, setSelectedPrize] = useState<Prize | null>(null);
   const [lastSpinId, setLastSpinId] = useState<string | null>(null);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const pollingRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Загружаем призы рулетки
   useEffect(() => {
@@ -58,7 +58,9 @@ export default function ClubQR() {
                 image: latestSpin.prize.image,
                 probability: 0,
                 slotIndex: latestSpin.prize.slotIndex || 0,
-                createdAt: new Date().toISOString(),
+                description: latestSpin.prize.description || '',
+                status: 'pending',
+                wonAt: new Date().toISOString(),
               };
               startSpin(tempPrize);
             }
@@ -192,7 +194,6 @@ export default function ClubQR() {
                   {/* Дублируем призы для бесшовной прокрутки */}
                   {[...roulettePrizes, ...roulettePrizes, ...roulettePrizes].map((prize, index) => {
                     const isSelected = !isSpinning && selectedPrize?.id === prize.id;
-                    const originalIndex = index % roulettePrizes.length;
                     
                     return (
                       <div

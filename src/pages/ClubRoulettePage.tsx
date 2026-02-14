@@ -4,11 +4,11 @@ import type { Prize } from '@/types';
 import './ClubRoulettePage.css';
 
 export default function ClubRoulettePage() {
-  const { prizes, rouletteConfig } = useStore();
+  const { prizes } = useStore();
   const [isSpinning, setIsSpinning] = useState(false);
   const [selectedPrize, setSelectedPrize] = useState<Prize | null>(null);
   const [spinningIndex, setSpinningIndex] = useState(0);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Симуляция получения спина от игрока
   useEffect(() => {
@@ -135,7 +135,7 @@ export default function ClubRoulettePage() {
       )}
 
       {/* Кнопка для тестирования (убрать в продакшене) */}
-      {process.env.NODE_ENV === 'development' && (
+      {import.meta.env.MODE === 'development' && (
         <button onClick={handleTestSpin} className="test-spin-button">
           Тест спин
         </button>

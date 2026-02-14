@@ -56,7 +56,7 @@ export default function ClubModal({ isOpen, onClose, onSave, club }: ClubModalPr
           name="name"
           type="text"
           value={name}
-          onChange={setName}
+          onChange={(value) => setName(String(value))}
           placeholder="Введите название клуба"
           required
         />
@@ -65,7 +65,7 @@ export default function ClubModal({ isOpen, onClose, onSave, club }: ClubModalPr
           name="phone"
           type="tel"
           value={phone}
-          onChange={setPhone}
+          onChange={(value) => setPhone(String(value))}
           placeholder="+7 (___) ___-__-__"
           mask="+7 (999) 999-99-99"
           required
@@ -76,7 +76,7 @@ export default function ClubModal({ isOpen, onClose, onSave, club }: ClubModalPr
             name="address"
             type="text"
             value={address}
-            onChange={setAddress}
+            onChange={(value) => setAddress(String(value))}
             placeholder="Введите адрес клуба"
             required
           />

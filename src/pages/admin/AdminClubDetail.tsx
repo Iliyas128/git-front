@@ -3,8 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useStore } from '@/store/useStore';
 import ClubModal from '@/components/ClubModal';
 import Skeleton from '@/components/Skeleton';
-import { transformClub } from '@/utils/transformers';
-import type { Club, Player } from '@/types';
+import type { Club, Player, User } from '@/types';
 import './AdminPages.css';
 
 export default function AdminClubDetail() {
@@ -32,12 +31,15 @@ export default function AdminClubDetail() {
         if (foundClub) {
           setClub(foundClub);
           // Загружаем игроков клуба
-          const allPlayers = await fetchUsers('player');
-          const clubPlayersList = allPlayers.filter((p: Player) => 
-            p.clubId === foundClub.clubId || 
-            (p as any).clubId?._id === foundClub.id ||
-            (p as any).clubId?.clubId === foundClub.clubId
-          );
+          const allUsers = await fetchUsers('player');
+          const clubPlayersList = allUsers
+            .filter((u: User) => {
+              const user = u as Player;
+              return user.clubId === foundClub.clubId || 
+                (user as any).clubId?._id === foundClub.id ||
+                (user as any).clubId?.clubId === foundClub.clubId;
+            })
+            .map((u: User) => u as Player);
           setClubPlayers(clubPlayersList);
         } else {
           navigate('/admin/clubs');

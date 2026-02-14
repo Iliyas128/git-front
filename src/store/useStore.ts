@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { User, Player, Club, Admin, Prize, Transaction, RouletteConfig } from '@/types';
+import type { User, Player, Club, Admin, Prize, RouletteConfig } from '@/types';
 import { apiService } from '@/services/api';
 import {
   transformUser,

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useStore } from '@/store/useStore';
-import Skeleton from '@/components/Skeleton';
 import ClubModal from '@/components/ClubModal';
 import PrizeModal from '@/components/PrizeModal';
 import UserModal from '@/components/UserModal';
@@ -28,7 +27,6 @@ export default function AdminDashboard() {
     updatePrize,
     deletePrize,
     fetchAnalytics,
-    isLoading,
   } = useStore();
   const [activeTab, setActiveTab] = useState<'overview' | 'clubs' | 'users' | 'prizes' | 'roulette' | 'analytics'>('overview');
   const [analytics, setAnalytics] = useState<any>(null);

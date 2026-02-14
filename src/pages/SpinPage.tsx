@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useStore } from '@/store/useStore';
-import Skeleton from '@/components/Skeleton';
 import type { Player, Prize } from '@/types';
 import './SpinPage.css';
 

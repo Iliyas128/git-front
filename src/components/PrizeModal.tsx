@@ -104,7 +104,7 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize }: PrizeModa
           name="name"
           type="text"
           value={name}
-          onChange={setName}
+          onChange={(value) => setName(String(value))}
           placeholder="Введите название приза"
           required
         />
@@ -113,7 +113,7 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize }: PrizeModa
           name="type"
           type="select"
           value={type}
-          onChange={setType}
+          onChange={(value) => setType(String(value))}
           required
           options={[
             { value: 'points', label: 'Баллы' },
@@ -128,7 +128,7 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize }: PrizeModa
             name="value"
             type="number"
             value={value}
-            onChange={setValue}
+            onChange={(value) => setValue(typeof value === 'number' ? value : Number(value))}
             placeholder="0"
             min={0}
             required
@@ -139,7 +139,7 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize }: PrizeModa
           name="dropChance"
           type="number"
           value={dropChance}
-          onChange={setDropChance}
+          onChange={(value) => setDropChance(typeof value === 'number' ? value : Number(value))}
           placeholder="0-100"
           min={0}
           max={100}
@@ -153,7 +153,7 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize }: PrizeModa
               name="slotIndex"
               type="number"
               value={slotIndex}
-              onChange={setSlotIndex}
+              onChange={(value) => setSlotIndex(typeof value === 'number' ? value : Number(value))}
               placeholder="0-24"
               min={0}
               max={24}
@@ -164,7 +164,7 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize }: PrizeModa
               name="totalQuantity"
               type="number"
               value={totalQuantity}
-              onChange={setTotalQuantity}
+              onChange={(value) => setTotalQuantity(typeof value === 'number' ? value : Number(value))}
               placeholder="100"
               min={1}
               required

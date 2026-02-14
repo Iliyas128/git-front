@@ -54,7 +54,7 @@ export default function UserModal({ isOpen, onClose, onSave, user }: UserModalPr
           name="balance"
           type="number"
           value={balance}
-          onChange={setBalance}
+          onChange={(value) => setBalance(typeof value === 'number' ? value : Number(value))}
           placeholder="0"
           min={0}
           required
