@@ -194,6 +194,73 @@
   color: #ff6b7a;
 }
 
+.club-spin-card {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%);
+  padding: 28px 32px;
+  border-radius: 20px;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.club-spin-card h2 {
+  color: #8B5CF6;
+  font-size: 22px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.club-spin-hint {
+  color: #b8b8d4;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.club-spin-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.club-id-input {
+  flex: 1;
+  min-width: 180px;
+  padding: 14px 18px;
+  background: rgba(10, 10, 15, 0.6);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 12px;
+  color: #e0e0e0;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.club-id-input::placeholder {
+  color: rgba(184, 184, 212, 0.5);
+}
+
+.club-id-input:focus {
+  border-color: #8B5CF6;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+}
+
+.club-spin-go {
+  padding: 14px 28px;
+  font-size: 15px;
+}
+
+@media (max-width: 768px) {
+  .club-spin-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .club-id-input {
+    min-width: 0;
+  }
+}
+
 .prizes-section,
 .history-section {
   background: rgba(10, 10, 15, 0.6);

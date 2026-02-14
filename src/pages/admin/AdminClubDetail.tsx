@@ -35,9 +35,8 @@ export default function AdminClubDetail() {
           const clubPlayersList = allUsers
             .filter((u: User) => {
               const user = u as Player;
-              return user.clubId === foundClub.clubId || 
-                (user as any).clubId?._id === foundClub.id ||
-                (user as any).clubId?.clubId === foundClub.clubId;
+              const userClubId = typeof user.clubId === 'string' ? user.clubId : (user as any).clubId?._id ?? (user as any).clubId;
+              return userClubId && String(userClubId) === String(foundClub.id);
             })
             .map((u: User) => u as Player);
           setClubPlayers(clubPlayersList);
@@ -155,7 +154,7 @@ export default function AdminClubDetail() {
                     <tr key={player.id}>
                       <td>{player.phone}</td>
                       <td>{player.balance} баллов</td>
-                      <td>{player.prizes?.length || 0}</td>
+                      <td>{player.prizeCount ?? player.prizes?.length ?? 0}</td>
                       <td>{new Date(player.createdAt).toLocaleDateString('ru-RU')}</td>
                     </tr>
                   ))}

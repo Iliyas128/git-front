@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useStore } from '@/store/useStore';
 import type { UserRole } from '@/types';
 
@@ -9,9 +9,12 @@ interface ProtectedRouteProps {
 
 export default function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) {
   const { isAuthenticated, currentUser } = useStore();
+  const location = useLocation();
 
   if (!isAuthenticated || !currentUser) {
-    return <Navigate to="/auth" replace />;
+    const returnUrl = location.pathname + location.search;
+    const to = returnUrl ? `/auth?redirect=${encodeURIComponent(returnUrl)}` : '/auth';
+    return <Navigate to={to} replace state={{ from: location }} />;
   }
 
   if (currentUser.role !== requiredRole) {

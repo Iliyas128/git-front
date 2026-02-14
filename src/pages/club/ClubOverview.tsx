@@ -1,11 +1,21 @@
 import { useState, useEffect } from 'react';
 import { useStore } from '@/store/useStore';
+import type { Club } from '@/types';
 import Skeleton from '@/components/Skeleton';
 import './ClubPages.css';
 
 export default function ClubOverview() {
-  const { players, fetchClubData, fetchClubPlayers, fetchClubPrizeClaims, isLoading } = useStore();
+  const { currentUser, players, fetchClubData, fetchClubPlayers, fetchClubPrizeClaims, isLoading } = useStore();
   const [prizeClaims, setPrizeClaims] = useState<any[]>([]);
+  const club = currentUser?.role === 'club' ? (currentUser as Club) : null;
+  const stats = club?.statistics;
+  const totalSpins = Number(stats?.totalSpins) || 0;
+  const totalPlayers = Number(stats?.totalPlayers) ?? players.length;
+  const totalPrizes = prizeClaims.length;
+  const pendingCount = prizeClaims.filter((p: any) => p.status === 'pending').length;
+  const issuedCount = prizeClaims.filter(
+    (p: any) => p.status === 'issued' || p.status === 'confirmed' || p.status === 'completed'
+  ).length;
 
   useEffect(() => {
     fetchClubData();
@@ -13,7 +23,7 @@ export default function ClubOverview() {
     fetchClubPrizeClaims().then(setPrizeClaims);
   }, [fetchClubData, fetchClubPlayers, fetchClubPrizeClaims]);
 
-  if (isLoading) {
+  if (isLoading && !club) {
     return <Skeleton />;
   }
 
@@ -23,26 +33,53 @@ export default function ClubOverview() {
         <h2>Обзор</h2>
         <div className="stats-grid">
           <div className="stat-card">
+            <h3>Всего спинов</h3>
+            <div className="stat-value">{totalSpins}</div>
+          </div>
+          <div className="stat-card">
             <h3>Всего игроков</h3>
-            <div className="stat-value">{players.length}</div>
+            <div className="stat-value">{totalPlayers}</div>
           </div>
           <div className="stat-card">
             <h3>Всего призов</h3>
-            <div className="stat-value">{prizeClaims.length}</div>
+            <div className="stat-value">{totalPrizes}</div>
           </div>
           <div className="stat-card">
             <h3>Ожидают подтверждения</h3>
-            <div className="stat-value">
-              {prizeClaims.filter((p: any) => p.status === 'pending').length}
-            </div>
+            <div className="stat-value">{pendingCount}</div>
           </div>
           <div className="stat-card">
             <h3>Выдано призов</h3>
-            <div className="stat-value">
-              {prizeClaims.filter((p: any) => p.status === 'issued').length}
-            </div>
+            <div className="stat-value">{issuedCount}</div>
           </div>
         </div>
+
+        {issuedCount > 0 && (
+          <div className="overview-issued-section">
+            <h3>Выданные призы</h3>
+            <ul className="issued-claims-list">
+              {prizeClaims
+                .filter((p: any) => p.status === 'issued' || p.status === 'confirmed' || p.status === 'completed')
+                .slice(0, 10)
+                .map((claim: any) => (
+                  <li key={claim._id || claim.id}>
+                    <span className="issued-prize-name">{claim.prizeId?.name ?? claim.prizeId ?? 'Приз'}</span>
+                    <span className="issued-prize-player">{claim.userId?.phone ?? '—'}</span>
+                    <span className="issued-prize-date">
+                      {claim.confirmedAt
+                        ? new Date(claim.confirmedAt).toLocaleDateString('ru-RU')
+                        : claim.createdAt
+                          ? new Date(claim.createdAt).toLocaleDateString('ru-RU')
+                          : '—'}
+                    </span>
+                  </li>
+                ))}
+            </ul>
+            {issuedCount > 10 && (
+              <p className="issued-more">и ещё {issuedCount - 10} — во вкладке «Призы»</p>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -48,7 +48,7 @@ export default function AdminClubs() {
                   <h3>{club.clubName}</h3>
                   <p><strong>ID:</strong> {club.clubId}</p>
                   <p><strong>Телефон:</strong> {club.phone}</p>
-                  <p><strong>Игроков:</strong> {club.players.length}</p>
+                  <p><strong>Игроков:</strong> {club.playerCount ?? club.players?.length ?? 0}</p>
                 </div>
                 <div className="club-actions">
                   <button 

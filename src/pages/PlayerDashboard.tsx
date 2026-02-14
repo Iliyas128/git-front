@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '@/store/useStore';
 import type { Player } from '@/types';
@@ -8,6 +8,7 @@ export default function PlayerDashboard() {
   const navigate = useNavigate();
   const { currentUser, logout, fetchPlayerData } = useStore();
   const player = currentUser as Player | null;
+  const [clubIdInput, setClubIdInput] = useState('');
 
   useEffect(() => {
     if (player) {
@@ -47,6 +48,33 @@ export default function PlayerDashboard() {
               <p className="insufficient-balance">
                 Недостаточно баллов для прокрутки (нужно 20)
               </p>
+            )}
+          </div>
+
+          <div className="club-spin-card">
+            <h2>Рулетка клуба по ID</h2>
+            <p className="club-spin-hint">Вставьте ID клуба, чтобы крутить его рулетку</p>
+            <div className="club-spin-row">
+              <input
+                type="text"
+                className="club-id-input"
+                placeholder="ID клуба"
+                value={clubIdInput}
+                onChange={(e) => setClubIdInput(e.target.value.trim())}
+              />
+              <button
+                type="button"
+                className="spin-button club-spin-go"
+                disabled={!clubIdInput || player.balance < 20}
+                onClick={() => {
+                  if (clubIdInput) navigate(`/spin?club=${encodeURIComponent(clubIdInput)}`);
+                }}
+              >
+                Крутить рулетку
+              </button>
+            </div>
+            {player.balance < 20 && (
+              <p className="insufficient-balance">Нужно минимум 20 баллов для прокрутки</p>
             )}
           </div>
 

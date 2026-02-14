@@ -50,7 +50,7 @@ export default function AdminUsers() {
                 <tr key={player.id}>
                   <td>{player.phone}</td>
                   <td>{player.balance} баллов</td>
-                  <td>{player.prizes.length}</td>
+                  <td>{player.prizeCount ?? player.prizes?.length ?? 0}</td>
                   <td>{new Date(player.createdAt).toLocaleDateString('ru-RU')}</td>
                   <td>
                     <div className="club-actions">

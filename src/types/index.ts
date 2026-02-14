@@ -14,6 +14,8 @@ export interface Player extends User {
   balance: number;
   clubId?: string;
   prizes: Prize[];
+  /** Количество выигранных призов (с бэкенда) */
+  prizeCount?: number;
   history: Transaction[];
 }
 
@@ -24,6 +26,8 @@ export interface Club extends User {
   qrCode: string;
   token: string;
   players: string[];
+  /** Количество игроков в клубе (с бэкенда) */
+  playerCount?: number;
   statistics: ClubStatistics;
 }
 
@@ -40,6 +44,8 @@ export interface Prize {
   image?: string;
   probability: number;
   slotIndex?: number;
+  /** Участвует ли приз в рулетке (админ может отключить) */
+  isActive?: boolean;
   status: 'pending' | 'confirmed' | 'issued';
   wonAt: string;
   clubId?: string;

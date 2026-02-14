@@ -239,6 +239,10 @@
   color: #8B5CF6;
   margin-bottom: 10px;
   font-size: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
   font-weight: 700;
 }
 
@@ -317,6 +321,133 @@
   color: #8B5CF6;
 }
 
+.roulette-ready-block {
+  margin-top: 32px;
+  padding: 28px 24px;
+  background: linear-gradient(145deg, rgba(20, 15, 35, 0.95) 0%, rgba(15, 10, 25, 0.98) 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(139, 92, 246, 0.1);
+  text-align: center;
+}
+
+.ready-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 36px;
+  background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 50%, #5B21B6 100%);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  box-shadow: 0 6px 24px rgba(139, 92, 246, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.ready-button:hover {
+  box-shadow: 0 10px 36px rgba(139, 92, 246, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transform: translateY(-3px);
+  background: linear-gradient(135deg, #9D6BF7 0%, #7C3AED 50%, #6D28D9 100%);
+}
+
+.ready-button:active {
+  transform: translateY(-1px);
+}
+
+.ready-button-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.ready-button-text {
+  letter-spacing: 1.5px;
+}
+
+.roulette-ready-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.cancel-ready-button {
+  padding: 14px 28px;
+  background: transparent;
+  color: #b8b8d4;
+  border: 1px solid rgba(184, 184, 212, 0.4);
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.cancel-ready-button:hover {
+  color: #e0e0e0;
+  border-color: rgba(184, 184, 212, 0.6);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.roulette-ready-hint {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: #b8b8d4;
+}
+
+.roulette-check-result {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  background: rgba(10, 10, 15, 0.5);
+}
+
+.roulette-check-result.has-errors {
+  border-color: rgba(239, 68, 68, 0.5);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.roulette-check-errors {
+  color: #fca5a5;
+  font-size: 14px;
+  margin: 0 0 12px;
+}
+
+.roulette-check-errors p {
+  margin: 6px 0;
+}
+
+.roulette-check-warnings {
+  color: #fcd34d;
+  font-size: 14px;
+  margin: 0;
+}
+
+.roulette-check-warnings p {
+  margin: 6px 0;
+}
+
+.roulette-check-ok {
+  color: #86efac;
+  font-size: 14px;
+  margin: 0;
+}
+
 .roulette-config {
   display: flex;
   flex-direction: column;
@@ -367,6 +498,18 @@
   color: #8B5CF6;
   margin-bottom: 10px;
   font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.slot-index-badge {
+  font-size: 11px;
+  font-weight: 500;
+  color: #b8b8d4;
+  background: rgba(139, 92, 246, 0.2);
+  padding: 2px 6px;
+  border-radius: 6px;
 }
 
 .slot-info p {
@@ -407,6 +550,95 @@
   color: #ff6b7a;
   font-weight: 600;
   margin-top: 10px;
+}
+
+/* Выбор призов для рулетки */
+.roulette-prize-selection {
+  margin-bottom: 32px;
+}
+
+.roulette-prize-selection h3 {
+  color: #8B5CF6;
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+.prize-roulette-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.prize-roulette-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  background: rgba(26, 26, 46, 0.6);
+  border-radius: 12px;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.prize-roulette-row.in-roulette {
+  border-color: rgba(139, 92, 246, 0.5);
+  background: rgba(139, 92, 246, 0.08);
+}
+
+.prize-roulette-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+}
+
+.prize-roulette-thumb {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: rgba(10, 10, 15, 0.8);
+}
+
+.prize-roulette-info strong {
+  color: #e0e0e0;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.prize-roulette-meta {
+  font-size: 13px;
+  color: #b8b8d4;
+}
+
+.prize-slot-index {
+  font-size: 11px;
+  color: #b8b8d4;
+  opacity: 0.9;
+}
+
+.roulette-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.roulette-toggle input {
+  width: 20px;
+  height: 20px;
+  accent-color: #8B5CF6;
+  cursor: pointer;
+}
+
+.roulette-toggle-label {
+  color: #b8b8d4;
+  font-size: 14px;
+}
+
+.edit-button.small {
+  padding: 8px 14px;
+  font-size: 13px;
 }
 
 .roulette-actions {

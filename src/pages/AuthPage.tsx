@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useStore } from '@/store/useStore';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import InputMask from 'react-input-mask';
 import Skeleton from '@/components/Skeleton';
 import './AuthPage.css';
 
 export default function AuthPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get('redirect');
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -16,8 +18,9 @@ export default function AuthPage() {
 
   useEffect(() => {
     if (isAuthenticated && currentUser) {
-      // Редирект в зависимости от роли
-      if (currentUser.role === 'admin') {
+      if (redirectTo && currentUser.role === 'player') {
+        navigate(redirectTo.startsWith('/') ? redirectTo : `/${redirectTo}`, { replace: true });
+      } else if (currentUser.role === 'admin') {
         navigate('/admin');
       } else if (currentUser.role === 'club') {
         navigate('/club');
@@ -25,7 +28,7 @@ export default function AuthPage() {
         navigate('/player');
       }
     }
-  }, [isAuthenticated, currentUser, navigate]);
+  }, [isAuthenticated, currentUser, navigate, redirectTo]);
 
   useEffect(() => {
     if (storeError) {
@@ -43,11 +46,18 @@ export default function AuthPage() {
       if (isRegister) {
         success = await register(phone, code);
       } else {
-        // Единый вход для всех ролей
         success = await login(phone, code);
       }
 
-      if (!success) {
+      if (success) {
+        // Сразу редирект по QR-ссылке (например /spin?club=...), иначе роут /auth переключится на "/"
+        const user = useStore.getState().currentUser;
+        if (redirectTo && user?.role === 'player') {
+          const path = redirectTo.startsWith('/') ? redirectTo : `/${redirectTo}`;
+          navigate(path, { replace: true });
+          return;
+        }
+      } else {
         const storeError = useStore.getState().error;
         setError(storeError || (isRegister ? 'Ошибка регистрации' : 'Неверный телефон или код'));
       }

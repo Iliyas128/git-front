@@ -69,7 +69,7 @@ interface Store {
     totalQuantity: number;
     image?: File | null;
   }) => Promise<Prize | null>;
-  updatePrize: (id: string, data: Partial<{ dropChance: number; image?: File | null }>) => Promise<boolean>;
+  updatePrize: (id: string, data: Partial<{ dropChance: number; isActive: boolean; image?: File | null }>) => Promise<boolean>;
   deletePrize: (id: string) => Promise<boolean>;
   fetchAnalytics: (startDate?: string, endDate?: string) => Promise<any>;
   updatePrizeFund: (data: { prizeId: string; totalQuantity: number; remainingQuantity: number }) => Promise<boolean>;
@@ -264,18 +264,19 @@ export const useStore = create<Store>()(
             apiService.getPrizes(),
           ]);
 
+          const activePrizes = prizesRes.filter((p: any) => p.isActive !== false);
           set({
             clubs: clubsRes.map(transformClub),
             players: usersRes.filter((u: any) => u.role === 'player').map(transformPlayer),
             admins: usersRes.filter((u: any) => u.role === 'admin').map(transformAdmin),
             prizes: prizesRes.map(transformPrize),
             rouletteConfig: {
-              slots: prizesRes.map((prize: any, index: number) => ({
+              slots: activePrizes.map((prize: any, index: number) => ({
                 id: `slot-${index}`,
                 prizeId: prize._id || prize.id,
                 probability: (prize.dropChance || 0) / 100,
               })),
-              totalProbability: prizesRes.reduce((sum: number, p: any) => sum + (p.dropChance || 0) / 100, 0),
+              totalProbability: activePrizes.reduce((sum: number, p: any) => sum + (p.dropChance || 0) / 100, 0),
             },
             isLoading: false,
           });
@@ -445,10 +446,14 @@ export const useStore = create<Store>()(
             if (u.role === 'admin') return transformAdmin(u);
             return transformUser(u);
           });
+          const playersList = users.filter((u: any) => u.role === 'player') as Player[];
+          const adminsList = users.filter((u: any) => u.role === 'admin') as Admin[];
           if (role === 'player') {
             set({ players: users as Player[] });
           } else if (role === 'admin') {
             set({ admins: users as Admin[] });
+          } else {
+            set({ players: playersList, admins: adminsList });
           }
           return users;
         } catch (error: any) {
@@ -483,7 +488,16 @@ export const useStore = create<Store>()(
         try {
           const response = await apiService.getPrizes();
           const prizes = response.map(transformPrize);
-          set({ prizes });
+          const activePrizes = Array.isArray(response) ? response.filter((p: any) => p.isActive !== false) : [];
+          const rouletteConfig = {
+            slots: activePrizes.map((prize: any, index: number) => ({
+              id: `slot-${index}`,
+              prizeId: prize._id || prize.id,
+              probability: (prize.dropChance || 0) / 100,
+            })),
+            totalProbability: activePrizes.reduce((sum: number, p: any) => sum + (p.dropChance || 0) / 100, 0),
+          };
+          set({ prizes, rouletteConfig });
           return prizes;
         } catch (error: any) {
           set({ error: error.response?.data?.message || 'Ошибка загрузки призов' });
@@ -506,8 +520,9 @@ export const useStore = create<Store>()(
           set({ prizes: [...get().prizes, prize] });
           return prize;
         } catch (error: any) {
-          set({ error: error.response?.data?.message || 'Ошибка создания приза' });
-          return null;
+          const message = error.response?.data?.message || 'Ошибка создания приза';
+          set({ error: message });
+          throw new Error(message);
         }
       },
 

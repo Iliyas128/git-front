@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useSearchParams } from 'react-router-dom';
 import { useStore } from './store/useStore';
 import AuthPage from './pages/AuthPage';
 import PlayerDashboard from './pages/PlayerDashboard';
@@ -19,6 +19,17 @@ import AdminRoulette from './pages/admin/AdminRoulette';
 import AdminAnalytics from './pages/admin/AdminAnalytics';
 import ProtectedRoute from './components/ProtectedRoute';
 
+function RedirectAfterLogin() {
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get('redirect');
+  const { currentUser } = useStore();
+  if (redirectTo && currentUser?.role === 'player') {
+    const path = redirectTo.startsWith('/') ? redirectTo : `/${redirectTo}`;
+    return <Navigate to={path} replace />;
+  }
+  return <Navigate to="/" replace />;
+}
+
 function App() {
   const { isAuthenticated, currentUser } = useStore();
 
@@ -26,7 +37,7 @@ function App() {
     <Routes>
       <Route
         path="/auth"
-        element={isAuthenticated ? <Navigate to="/" replace /> : <AuthPage />}
+        element={isAuthenticated ? <RedirectAfterLogin /> : <AuthPage />}
       />
       <Route
         path="/spin"

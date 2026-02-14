@@ -17,9 +17,11 @@ interface PrizeModalProps {
     image?: File | null;
   }) => Promise<void>;
   prize?: Prize | null;
+  /** Занятые индексы слотов другими призами (при создании — не допускаются) */
+  existingSlotIndices?: number[];
 }
 
-export default function PrizeModal({ isOpen, onClose, onSave, prize }: PrizeModalProps) {
+export default function PrizeModal({ isOpen, onClose, onSave, prize, existingSlotIndices = [] }: PrizeModalProps) {
   const [name, setName] = useState('');
   const [type, setType] = useState('points');
   const [value, setValue] = useState<number>(0);
@@ -29,14 +31,16 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize }: PrizeModa
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
   useEffect(() => {
+    setValidationErrors([]);
     if (prize) {
       setName(prize.name || '');
       setType(prize.type || 'points');
       setValue(prize.value || 0);
       setDropChance((prize.probability || 0) * 100);
-      setSlotIndex(0);
+      setSlotIndex(prize.slotIndex ?? 0);
       setTotalQuantity(100);
       setImage(null);
       setImagePreview(prize.image || null);
@@ -66,16 +70,35 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize }: PrizeModa
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || dropChance <= 0) return;
-    if (!prize && !image) {
-      alert('Пожалуйста, выберите изображение для приза');
+    const errors: string[] = [];
+
+    if (!name?.trim()) errors.push('Введите название приза.');
+    if (dropChance <= 0) errors.push('Вероятность выпадения должна быть больше 0%.');
+    if (dropChance > 100) errors.push('Вероятность не должна превышать 100%.');
+
+    if (!prize) {
+      if (!image && !imagePreview) {
+        errors.push('Загрузите изображение приза — без фото создание невозможно.');
+      }
+      const occupied = existingSlotIndices.filter((i) => i !== (prize?.slotIndex ?? -1));
+      if (occupied.includes(slotIndex)) {
+        errors.push(`Индекс слота ${slotIndex} уже занят другим призом. Выберите другой (0–24).`);
+      }
+      if (slotIndex < 0 || slotIndex > 24) {
+        errors.push('Индекс слота должен быть от 0 до 24.');
+      }
+    }
+
+    if (errors.length > 0) {
+      setValidationErrors(errors);
       return;
     }
+    setValidationErrors([]);
 
     setIsLoading(true);
     try {
       await onSave({
-        name,
+        name: name.trim(),
         type,
         value: type === 'points' || type === 'club_time' ? value : undefined,
         dropChance,
@@ -84,8 +107,9 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize }: PrizeModa
         image,
       });
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving prize:', error);
+      setValidationErrors([error?.message || 'Ошибка сохранения. Проверьте данные и попробуйте снова.']);
     } finally {
       setIsLoading(false);
     }
@@ -148,17 +172,20 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize }: PrizeModa
         />
         {!prize && (
           <>
-            <FormField
-              label="Индекс слота"
-              name="slotIndex"
-              type="number"
-              value={slotIndex}
-              onChange={(value) => setSlotIndex(typeof value === 'number' ? value : Number(value))}
-              placeholder="0-24"
-              min={0}
-              max={24}
-              required
-            />
+            <div className="form-field">
+              <FormField
+                label="Индекс слота (0–24)"
+                name="slotIndex"
+                type="number"
+                value={slotIndex}
+                onChange={(value) => setSlotIndex(typeof value === 'number' ? value : Number(value))}
+                placeholder="0-24"
+                min={0}
+                max={24}
+                required
+              />
+              <p className="form-hint">Уникальный номер, не должен совпадать с другими призами. Занятые: {existingSlotIndices.length ? existingSlotIndices.sort((a, b) => a - b).join(', ') : 'нет'}.</p>
+            </div>
             <FormField
               label="Общее количество"
               name="totalQuantity"
@@ -171,11 +198,21 @@ export default function PrizeModal({ isOpen, onClose, onSave, prize }: PrizeModa
             />
           </>
         )}
+        {validationErrors.length > 0 && (
+          <div className="prize-modal-errors" role="alert">
+            {validationErrors.map((msg, i) => (
+              <p key={i} className="prize-modal-error-item">⚠️ {msg}</p>
+            ))}
+          </div>
+        )}
         <div className="form-field">
           <label htmlFor="prize-image" className="form-label">
             Изображение приза
             {!prize && <span className="required">*</span>}
           </label>
+          {!prize && (
+            <p className="form-hint">Без фото приз создать нельзя.</p>
+          )}
           <div className="image-upload-container">
             {imagePreview && (
               <div className="image-preview">

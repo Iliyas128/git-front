@@ -43,7 +43,7 @@ export default function AdminPrizes() {
               </div>
             )}
             <div className="prize-info">
-              <h3>{prize.name}</h3>
+              <h3>{prize.name}{prize.slotIndex != null && <span className="slot-index-badge">слот {prize.slotIndex}</span>}</h3>
               <p>{prize.description}</p>
               <p>Тип: {prize.type}</p>
               {prize.value && <p>Значение: {prize.value}</p>}
@@ -83,6 +83,10 @@ export default function AdminPrizes() {
           await fetchPrizes();
         }}
         prize={selectedPrize}
+        existingSlotIndices={prizes
+          .filter((p) => p.id !== selectedPrize?.id)
+          .map((p) => p.slotIndex)
+          .filter((n): n is number => n != null)}
       />
     </div>
   );

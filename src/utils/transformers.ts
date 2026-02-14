@@ -19,11 +19,13 @@ export function transformPlayer(player: any): Player {
     balance: player.balance || 0,
     clubId: player.clubId?._id || player.clubId?.clubId || player.clubId,
     prizes: (player.prizes || []).map(transformPrize),
+    prizeCount: player.prizeCount,
     history: (player.transactions || []).map(transformTransaction),
   };
 }
 
 export function transformClub(club: any): Club {
+  const playersArray = Array.isArray(club.players) ? club.players : [];
   return {
     id: club._id || club.id,
     phone: club.ownerId?.phone || club.phone,
@@ -32,7 +34,8 @@ export function transformClub(club: any): Club {
     clubName: club.name,
     qrCode: club.qrCode || '',
     token: club.qrToken || '',
-    players: club.players || [],
+    players: playersArray,
+    playerCount: club.playerCount ?? (playersArray.length > 0 ? playersArray.length : undefined),
     statistics: {
       totalPlayers: club.statistics?.totalPlayers || 0,
       totalSpins: club.statistics?.totalSpins || 0,
@@ -60,6 +63,7 @@ export function transformPrize(prize: any): Prize {
     image: prize.image || prize.prizeId?.image,
     probability: prize.dropChance ? prize.dropChance / 100 : (prize.probability || 0),
     slotIndex: prize.slotIndex !== undefined ? prize.slotIndex : (prize.prizeId?.slotIndex),
+    isActive: prize.isActive !== false,
     status: prize.status || 'pending',
     wonAt: prize.createdAt || prize.wonAt || new Date().toISOString(),
     clubId: prize.clubId?._id || prize.clubId?.clubId || prize.clubId,

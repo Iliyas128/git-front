@@ -1,21 +1,24 @@
 import { useEffect, useState } from 'react';
 import { useStore } from '@/store/useStore';
+import type { Prize } from '@/types';
 import './Roulette.css';
 
 interface RouletteProps {
   isSpinning?: boolean;
   selectedPrizeIndex?: number;
+  /** Передать призы снаружи (например для страницы спина игрока), иначе берутся из store */
+  prizesOverride?: Prize[];
 }
 
-export default function Roulette({ isSpinning = false, selectedPrizeIndex }: RouletteProps) {
-  const { prizes } = useStore();
+export default function Roulette({ isSpinning = false, selectedPrizeIndex, prizesOverride }: RouletteProps) {
+  const { prizes: storePrizes } = useStore();
+  const prizes = (prizesOverride && prizesOverride.length > 0) ? prizesOverride : storePrizes;
   const [rotation, setRotation] = useState(0);
 
   useEffect(() => {
+    if (prizes.length === 0) return;
     if (isSpinning && selectedPrizeIndex !== undefined) {
-      // Вычисляем угол для выбранного приза
       const prizeAngle = (360 / prizes.length) * selectedPrizeIndex;
-      // Вращаем на несколько полных оборотов + угол приза
       const finalRotation = 360 * 5 + (360 - prizeAngle);
       setRotation(finalRotation);
     } else {
@@ -33,6 +36,14 @@ export default function Roulette({ isSpinning = false, selectedPrizeIndex }: Rou
     color: prizeColors[index % prizeColors.length],
     angle: (360 / prizes.length) * index,
   }));
+
+  if (slots.length === 0) {
+    return (
+      <div className="roulette-wrapper roulette-empty">
+        <p>Нет призов для рулетки</p>
+      </div>
+    );
+  }
 
   return (
     <div className="roulette-wrapper">

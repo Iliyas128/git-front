@@ -6,6 +6,23 @@
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
+.roulette-wrapper.roulette-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(26, 26, 46, 0.6);
+  border-radius: 50%;
+  border: 12px solid rgba(139, 92, 246, 0.3);
+}
+
+.roulette-wrapper.roulette-empty p {
+  color: #b8b8d4;
+  font-size: 14px;
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+}
+
 @media (max-width: 768px) {
   .roulette-wrapper {
     width: 280px;

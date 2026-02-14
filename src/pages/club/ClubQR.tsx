@@ -261,7 +261,7 @@ export default function ClubQR() {
             <img src={club.qrCode} alt="QR Code" className="qr-corner-image" />
           ) : (
             <QRCodeSVG
-              value={club.token || club.qrCode || `${window.location.origin}/spin?club=${club.clubId}`}
+              value={`${window.location.origin}/spin?club=${club.token || club.clubId}`}
               size={120}
               level="H"
             />
