@@ -6,6 +6,7 @@ import { transformPrize } from '@/utils/transformers';
 import type { Club, Prize } from '@/types';
 import './ClubPages.css';
 import '../ClubRoulettePage.css';
+import '../SpinPage.css';
 
 export default function ClubQR() {
   const { currentUser } = useStore();
@@ -161,100 +162,103 @@ export default function ClubQR() {
   };
 
   return (
-    <div className="club-page qr-roulette-page-fullscreen">
-      {/* Рулетка на весь экран */}
-      {roulettePrizes.length > 0 && (
-        <div className="roulette-section-fullscreen">
-          <div className="roulette-header-fullscreen">
-            <h1>Рулетка призов</h1>
-            <div className="roulette-status">
-              {isSpinning ? (
-                <span className="status-spinning">Крутится...</span>
-              ) : selectedPrize ? (
-                <span className="status-winner">Выигрыш!</span>
-              ) : (
-                <span className="status-waiting">Ожидание игрока...</span>
-              )}
+    <div className="spin-page club-qr-page">
+      {roulettePrizes.length > 0 ? (
+        <>
+          <div className="spin-container">
+            <div className="spin-header">
+              <h1>Рулетка призов</h1>
+              <div className="balance-info">
+                {isSpinning ? (
+                  <span className="status-spinning">Крутится...</span>
+                ) : selectedPrize ? (
+                  <span className="status-winner">Выигрыш!</span>
+                ) : (
+                  <span className="status-waiting">Ожидание игрока...</span>
+                )}
+              </div>
             </div>
-          </div>
 
-            <div className="cs-roulette-container">
-              <div className="cs-roulette-pointer"></div>
-              <div 
-                ref={rouletteRef}
-                className="cs-roulette-track"
-              >
-                <div 
-                  className="cs-roulette-items"
-                  style={{
-                    transform: `translateX(${scrollPosition}px)`,
-                    transition: isSpinning ? 'none' : 'transform 0.3s ease-out',
-                  }}
-                >
-                  {/* Дублируем призы для бесшовной прокрутки */}
-                  {[...roulettePrizes, ...roulettePrizes, ...roulettePrizes].map((prize, index) => {
-                    const isSelected = !isSpinning && selectedPrize?.id === prize.id;
-                    
-                    return (
-                      <div
-                        key={`${prize.id}-${index}`}
-                        className={`cs-prize-item ${isSelected ? 'selected' : ''}`}
-                      >
-                        <div className="cs-prize-inner">
-                          {prize.image ? (
-                            <img 
-                              src={prize.image} 
-                              alt={prize.name}
-                              className="cs-prize-image"
-                            />
-                          ) : (
-                            <div className="cs-prize-placeholder">
-                              {prize.name.charAt(0)}
-                            </div>
-                          )}
-                          <div className="cs-prize-name">{prize.name}</div>
-                          {prize.value && (
-                            <div className="cs-prize-value">{prize.value}</div>
-                          )}
+            <div className="spin-roulette-section">
+              <div className="cs-roulette-container">
+                <div className="cs-roulette-pointer" />
+                <div ref={rouletteRef} className="cs-roulette-track">
+                  <div
+                    className="cs-roulette-items"
+                    style={{
+                      transform: `translateX(${scrollPosition}px)`,
+                      transition: isSpinning ? 'none' : 'transform 0.3s ease-out',
+                    }}
+                  >
+                    {[...roulettePrizes, ...roulettePrizes, ...roulettePrizes].map((prize, index) => {
+                      const isSelected = !isSpinning && selectedPrize?.id === prize.id;
+                      return (
+                        <div
+                          key={`${prize.id}-${index}`}
+                          className={`cs-prize-item ${isSelected ? 'selected' : ''}`}
+                        >
+                          <div className="cs-prize-inner">
+                            {prize.image ? (
+                              <img
+                                src={prize.image}
+                                alt={prize.name}
+                                className="cs-prize-image"
+                              />
+                            ) : (
+                              <div className="cs-prize-placeholder">
+                                {prize.name.charAt(0)}
+                              </div>
+                            )}
+                            <div className="cs-prize-name">{prize.name}</div>
+                            {prize.value != null && (
+                              <div className="cs-prize-value">{prize.value}</div>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </div>
 
-          {selectedPrize && !isSpinning && (
-            <div className="result-overlay">
-              <div className="result-content">
-                <button
-                  onClick={() => setSelectedPrize(null)}
-                  className="result-close-button"
-                  aria-label="Закрыть"
-                >
-                  ×
-                </button>
-                <h2 className="result-title">Выигрыш!</h2>
-                <div className="result-prize">
-                  {selectedPrize.image && (
-                    <img 
-                      src={selectedPrize.image} 
-                      alt={selectedPrize.name}
-                      className="result-prize-image"
-                    />
-                  )}
-                  <div className="result-prize-name">{selectedPrize.name}</div>
-                  {selectedPrize.description && (
-                    <div className="result-prize-desc">{selectedPrize.description}</div>
-                  )}
+            {selectedPrize && !isSpinning && (
+              <div className="result-overlay">
+                <div className="result-content">
+                  <button
+                    onClick={() => setSelectedPrize(null)}
+                    className="result-close-button"
+                    aria-label="Закрыть"
+                  >
+                    ×
+                  </button>
+                  <h2 className="result-title">Выигрыш!</h2>
+                  <div className="result-prize">
+                    {selectedPrize.image && (
+                      <img
+                        src={selectedPrize.image}
+                        alt={selectedPrize.name}
+                        className="result-prize-image"
+                      />
+                    )}
+                    <div className="result-prize-name">{selectedPrize.name}</div>
+                    {selectedPrize.description && (
+                      <div className="result-prize-desc">{selectedPrize.description}</div>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
+        </>
+      ) : (
+        <div className="spin-container">
+          <div className="spin-page-loading">
+            <p>Загрузка призов рулетки...</p>
+          </div>
         </div>
       )}
 
-      {/* QR код в правом нижнем углу */}
       <div className="qr-corner">
         <div className="qr-corner-container">
           {club.qrCode && club.qrCode.startsWith('data:image') ? (

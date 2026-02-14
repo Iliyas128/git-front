@@ -275,6 +275,23 @@
 }
 
 /* Fullscreen Roulette Layout */
+/* Страница QR рулетки — тот же вид, что и /spin */
+.club-qr-page {
+  position: relative;
+}
+
+.club-qr-page .balance-info .status-waiting {
+  color: #b8b8d4;
+}
+
+.club-qr-page .balance-info .status-spinning {
+  color: #8B5CF6;
+}
+
+.club-qr-page .balance-info .status-winner {
+  color: #28a745;
+}
+
 .qr-roulette-page-fullscreen {
   position: relative;
   width: 100%;
@@ -535,7 +552,7 @@
   background: rgba(10, 10, 15, 0.4);
   border-radius: 0;
   border: none;
-  padding: 60px 0;
+  padding: 20px 0;
   box-shadow: none;
   backdrop-filter: blur(20px);
 }
@@ -546,7 +563,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: 3px;
-  height: calc(100% - 120px);
+  height: calc(100% - 60px);
   background: linear-gradient(
     to bottom,
     transparent 0%,
@@ -662,10 +679,9 @@
     0 0 80px rgba(139, 92, 246, 0.3),
     0 8px 32px rgba(0, 0, 0, 0.6),
     inset 0 0 30px rgba(139, 92, 246, 0.15);
-  transform: scale(1.08);
   z-index: 5;
   background: rgba(139, 92, 246, 0.1);
-  animation: winPulse 2s ease-in-out infinite;
+  animation: winPulseGlow 2s ease-in-out infinite;
 }
 
 .cs-prize-item.selected::before {
@@ -678,14 +694,13 @@
   );
 }
 
-@keyframes winPulse {
+@keyframes winPulseGlow {
   0%, 100% {
     box-shadow: 
       0 0 40px rgba(139, 92, 246, 0.6),
       0 0 80px rgba(139, 92, 246, 0.3),
       0 8px 32px rgba(0, 0, 0, 0.6),
       inset 0 0 30px rgba(139, 92, 246, 0.15);
-    transform: scale(1.08);
   }
   50% {
     box-shadow: 
@@ -693,7 +708,6 @@
       0 0 100px rgba(139, 92, 246, 0.4),
       0 10px 40px rgba(0, 0, 0, 0.7),
       inset 0 0 35px rgba(139, 92, 246, 0.2);
-    transform: scale(1.1);
   }
 }
 
